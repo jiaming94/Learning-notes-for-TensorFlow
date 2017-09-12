@@ -1,0 +1,755 @@
+\documentclass{article}
+
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amssymb}
+
+\usepackage{graphicx}
+\usepackage{float}
+
+%for links
+\usepackage{hyperref}
+\usepackage{bookmark}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,    
+    urlcolor=blue,
+    pdftitle={Sharelatex Example},
+    pdfpagemode=FullScreen,
+}
+%for page margin
+\usepackage{geometry}
+\geometry{
+	a4paper,
+	left=21mm,
+	right=21mm,
+	top = 23mm,
+	bottom = 23mm
+}
+
+\newtheorem{definition}{Definition}[section]
+\newtheorem{theorem}[definition]{Theorem}
+\newtheorem{lemma}[definition]{Lemma}
+\newtheorem{corollary}[definition]{Corollary}
+\newtheorem*{remark}{Remark}
+\usepackage{enumitem}
+
+
+%to embed codes
+\usepackage{listings}
+%to color codes
+\usepackage{color,colortbl}
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+\definecolor{LightCyan}{rgb}{0.88,1,1}
+%style codes
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\small,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2,
+}
+%set style to the defined style
+\lstset{style=mystyle}
+
+
+\title{Introduction to Tensorflow}
+\date{}
+\author{Song Jiaming}
+
+\begin{document}
+	\maketitle
+	\tableofcontents
+	\newpage
+	\section{Background}
+	TensorFlow is an open source software library for numerical computation using data flow graphs.
+	Nodes in the graph represent mathematical operations, while the graph edges represent the multidimensional data arrays (tensors) communicated between them.
+	The flexible architecture allows you to deploy computation to one or more CPUs or GPUs in a desktop, server, or mobile device with a single API.\medskip
+	\newline
+	TensorFlow was originally developed by researchers and engineers working on the Google Brain Team within Google's Machine Intelligence research organization for the purposes of conducting machine learning and deep neural networks\footnote{A computer system modelled on the human brain and nervous system} research, but the system is general enough to be applicable in a wide variety of other domains as well.
+
+
+	\section{Installation}
+	This guide help install tensorflow through pip. For other ways or more information, please visit \href{https://www.tensorflow.org/install/}{Tensorflow Installation page}	
+	\subsection{For Mac OS}
+	Your system must contain one of the following Python versions: Python 2.7 or 3.3+. The newest version is \href{https://www.python.org/downloads/release/python-362/}{\underline{Python 3.6.2}}\\
+	 \colorbox{backcolour}{pip} should be already installed with python: \colorbox{backcolour}{pip} for Python 2.7, \colorbox{backcolour}{pip3} for Python 3.n. Issue the following command to check if you have installed pip correctly:
+	\begin{lstlisting}[numbers=none,language=Python]
+$ pip -V # for Python 2.7
+$ pip3 -V # for Python 3.n		
+\end{lstlisting}
+To upgrade the versions:
+	\begin{lstlisting}[numbers=none,language=Python]
+$ sudo easy_install --upgrade pip
+$ sudo easy_install --upgrade six
+\end{lstlisting}
+	To install Tensor Flow, invoke one of the following commands:
+\begin{lstlisting}[numbers=none,language=Python]
+$ pip install tensorflow # for Python 2.7
+$ pip3 install tensorflow # for Python 3.n		
+\end{lstlisting}
+	\subsection{For Windows}
+		This guide is to install \emph{TensorFlow with CPU support only} version. If your system have a NVIDIA GPU and you wish to install \emph{TensorFlow with GPU support} version, please visit \href{https://www.tensorflow.org/install/install_windows}{Installing Tensorflow on Windows} for more details.\\
+		You should have the following version of Python installed on your machine: \begin{itemize}[nolistsep]
+		\item \href{https://www.python.org/downloads/release/python-352/}{\underline{Python 3.5 x 64-bit}}
+		\end{itemize}
+		Python 3.5.x comes with pip3 package manager, which is the program to install TensorFlow.\\
+		After you have correctly installed Python 3.5.x, start `Command Prompt', move to the directory where you store your python (cd `filepath'), then enter the following command:
+\begin{lstlisting}[numbers=none]
+pip3 install --upgrade tensorflow		
+\end{lstlisting}
+
+		\subsection{Validate your installation: Both Mac and Windows}
+		Open your python shell and enter the folloing program:
+\begin{lstlisting}[numbers=none,language=Python,morekeywords ={as}]
+>>> import tensorflow as tf
+>>> hello = tf.constant('Hello, Tensorflow!')
+>>> sess = tf.Session()
+>>> print(sess.run(hello))	
+\end{lstlisting}
+		If TensorFlow is installed successfully, you should be able to see the following:
+\begin{lstlisting}[numbers=none,language=Python]
+Hello, TensorFlow!
+\end{lstlisting}
+		If you see \emph{b'Hello, TensorFlow!'}, try the following command instead:
+\begin{lstlisting}[numbers=none,language=Python]
+>>> print(sess.run(hello).decode())
+\end{lstlisting}
+	
+	\section{Basics}
+	To use TensorFlow package
+\begin{lstlisting}[numbers=none,language=Python,morekeywords ={as}]
+import tensorflow as tf
+\end{lstlisting}
+	\subsection{Data Flow Graphs}
+		TensorFlow separates definition of computations from their execution.
+		\begin{figure}[H]
+  			\centering
+    		\includegraphics[width=0.7\linewidth]{dfg.png}
+		\end{figure}
+		\noindent Phase 1: assemble a graph\\
+		Phase 2: use a session to execute operations in the graph.
+		\subsubsection*{What's a tensor?}
+		An n-dimensional matrix:
+		\begin{itemize}[noitemsep,nolistsep]
+			\item 0-d tensor: scalar (number)
+			\item 1-d tensor: vector
+			\item 2-d tensor: matrix
+		\end{itemize}
+		\indent\indent\indent\vdots
+	\medskip
+	\subsection{Assign values}
+	\subsubsection{Constants}
+	Assign constant values to a tensor:
+\begin{lstlisting}[numbers=none,language=Python,morekeywords ={as}]
+tf.constant(value, dtype=None, shape=None,name='Const', verify_shape=False)
+\end{lstlisting}
+	where,
+	\begin{itemize}[noitemsep]
+		\item \colorbox{backcolour}{value}: can be any dimension
+		\item \colorbox{backcolour}{dtype}: type of the value
+		\item \colorbox{backcolour}{shape}: the dimension of the value you input 
+		\item \colorbox{backcolour}{name}: name for visualisation
+		\item \colorbox{backcolour}{verify\_shape}: verify if the value and shape you provided are consistent, error message will be shown if they are not. If this parameter is turned false, but the value and shape is inconsistent, tf.constant will repeat the last digit of the value you input.
+	\end{itemize}
+	Use \colorbox{backcolour}{print(sth)} to see the information of the Tensor but use \colorbox{backcolour}{sth.eval()} to see the exact value of the Tensor.\\
+	Note: To execute \colorbox{backcolour}{sth.eval()}, either \colorbox{backcolour}{tf.InteractiveSession()} or \colorbox{backcolour}{with tf.Session() as sess:} is needed. This session will be explained in the later part of the note.\\
+		Examples:
+\begin{lstlisting}[numbers=none,language=Python,morekeywords ={as}]
+a = tf.constant(2,shape=[2,2], verify_shape = True)
+# output: error
+a = tf.constant(3,shape=[2,2], verify_shape = False) # or just remove verify_shape
+# print(a) => Tensor("Const:0", shape=(2, 2), dtype=int32)
+# a.eval() => array([[3, 3],[3, 3]])
+b = tf.constant([2,1],shape=[3,3],name="b")
+# print(b) => Tensor("b:0", shape=(3, 3), dtype=int32)
+# b.eval() => array([[2, 1, 1],[1, 1, 1],[1, 1, 1]])
+c = tf.constant([[0,1],[2,3],[3,4]])
+\end{lstlisting}
+To interpret Tensor(``Const:0", shape=(2, 2), dtype=int32):
+\begin{itemize}
+	\item ``const" is the default name given when there is no input for `name' parameter. Sometimes you will see ``const\_1", ``const\_2", etc, this means that you have constructed multiple ``const" before.
+	\item 0: that's the position of this value in the tensor. An operation with n tensor outputs name these tensors "op\_name:0", "op\_name:1", ... "op\_name:n-1". Since the output here is just one tensor, it will be positioned at the start: 0.
+\end{itemize}
+	\noindent Try out the following codes :)
+\begin{lstlisting}[language=Python,morekeywords ={as}]
+a = tf.constant([2,2],name="a")
+b = tf.constant([[0,1],[2,3]], name = "b")
+x = tf.add(a, b, name="add") #a is added to both rows of b
+y = tf.multiply(a, b, name="mul") # a is mul picewisely to both rows of b
+with tf.Session() as sess:
+    x, y = sess.run([x,y])
+    print(x)
+    print(y)
+\end{lstlisting}
+	\medskip
+	\subsubsection{Zeros Tensor}
+	Which gives all 0s
+\begin{lstlisting}[numbers=none,language=Python,morekeywords ={as}]
+tf.zeros(shape,dtype=tf.float32, name=None)
+#For e.g.
+c = tf.zeros([2,3],tf.int32)
+# [0,0,0][0,0,0]
+\end{lstlisting}
+	If you have an input\_tensor, but you want a zero tensor which has the same shape of that tensor, use:
+\begin{lstlisting}[numbers=none,language=Python,morekeywords ={as}]
+tf.zeros_like(input_tensor,dtype=None, name=None, opimize=True)
+# For e.g. (Pesudo code)
+input_tensor is [[0,1],[2,3],[4,5]]
+tf.zeros_like(input_tensor) >>> [[0,0],[0,0],[0,0]]
+\end{lstlisting}	
+
+	\subsubsection{Ones Tensor}
+	Which gives all ones. It is similar to zeros tensor,
+\begin{lstlisting}[numbers=none,language=Python,morekeywords ={as}]
+tf.ones(shape,dtype=tf.float32, name=None)
+tf.ones_like(input_tensor,dtype=None, name=None, opimize=True)
+\end{lstlisting}
+	\subsubsection{Fill with a specific value} 
+	The tensor will have all elements equal to the defined value.
+\begin{lstlisting}[numbers=none,language=Python,morekeywords ={as}]
+tf.fill(dims,value,name=None) # "dims" -> dimensions
+# e.g.
+tf.fill([2,3],8) >>> [[8,8,8],[8,8,8]]
+\end{lstlisting}
+
+	\subsubsection{Constants as sequences} 
+	Getting a list of sequence:
+	\begin{itemize}
+	\item tf.linspace: A sequence of `num' evenly-spaced values are generated beginning at `start'. If num $>$ 1, the values in the sequence increase by (stop - start)/(num - 1), so that the last one is exactly `stop'.
+\begin{lstlisting}[numbers=none, language=Python,morekeywords ={as}]
+tf.linspace(start, stop, num, name=None) 
+# e.g.
+tf.linspace(10.0, 13.0, 4) #==> [10.0 11.0 12.0 13.0]
+\end{lstlisting}
+	\item tf.range : Creates a sequence of numbers that begins at `start' and extends by increments of `delta' up to but not including `limit'.
+\begin{lstlisting}[numbers=none, language=Python,morekeywords ={as}]
+tf.range(start, limit=None, delta=1, dtype=None, name='range')
+# e.g
+# 'start' is 3, 'limit' is 18, 'delta' is 3
+tf.range(3, 18, 3) #==> [3, 6, 9, 12, 15]
+# 'limit' is 5
+tf.range(5) #==> [0, 1, 2, 3, 4]
+\end{lstlisting}
+	\end{itemize}
+
+	\subsubsection{Randomly generated constants} 
+\begin{lstlisting}[language=Python,morekeywords ={as}]
+tf.random_normal(shape,mean=0.0,stddev=1.0,dtype=tf.float32,seed=None,name=None)
+tf.truncated_normal(shape,mean=0.0,stddev=1.0,dtype=tf.float32,seed=None,
+name=None) # similar to normal, but value is denser
+tf.random_uniform(shape,minval=0,maxval=None,dtype=tf.float32,seed=None,
+name=None)
+tf.random_shuffle(value,seed=None,name=None) # always shuffle on the 1st dimension
+tf.random_crop(value,size,seed=None,name=None) #randomly crop a shape size
+tf.multinomial(logits,num_samples,seed=None,name=None) 
+tf.random_gamma(shape,alpha,beta=None,dtype=tf.float32,seed=None,name=None)
+tf.set_random_seed(seed)  # values won't be deterministic
+\end{lstlisting}
+	\medskip
+	\subsection{Operations}
+	
+	\begin{tabular}{| c | c |}
+		\hline
+		\rowcolor{cyan}
+			\bf Category & \bf Examples\\
+		\hline
+			Element-wise math ops & add, subtract, multiply, div, log, greater, less, equal,\dots\\
+			\rowcolor{LightCyan}
+			Array operations & concat, slice, split, constant, rank, shape, shuffle,\dots\\
+			Matrix operations & matmul,matrixInverse, matrixDeterminant,\dots\\
+			\rowcolor{LightCyan}
+			Stateful operations & variable, assign, assignAdd,\dots\\
+			Neural network building blocks & softmax, sigmoid, relu, convolution2D, maxpool,\dots\\
+			\rowcolor{LightCyan}
+			Checkpointing operations & save, restore\\
+			Queue and synchronization operations & enqueue, dequeue, mutexacquire, mutexrelease\\
+			\rowcolor{LightCyan}
+			Control flow operations & merge, switch, enter, leave, nextiteration\\
+		\hline
+	\end{tabular}
+	Try the following examples:
+\begin{lstlisting}[language=Python,morekeywords ={as}]
+a = tf.constant([3, 6])
+b = tf.constant([2, 2])
+tf.add(a, b) # >> [5 8]
+tf.add_n([a, b, b]) # >> [7 10]. Equivalent to a + b + b
+tf.multiply(a, b) # >> [6 12] because mul is element wise
+tf.matmul(a, b) # >> ValueError
+tf.matmul(tf.reshape(a, [1, 2]), tf.reshape(b, [2, 1])) # >> [[18]]
+tf.div(a, b) # >> [1 3]
+tf.mod(a, b) # >> [1 0]
+\end{lstlisting}
+	\medskip
+	\subsection{Ranks, Shapes, Data Types}
+	In Tensorflow system, tensors are described by their rank(aka degree, order), shape (dimension) and data types.\\
+	\begin{itemize}
+		\item 0-d tensor, or "scalar", (Rank = 0, shape = [])
+\begin{lstlisting}[language=Python,numbers=none]
+t_0 = 19
+tf.zeros_like(t_0) # ==> 0
+tf.ones_like(t_0) # ==> 1
+\end{lstlisting}
+		\item 1-d tensor, or "vector", (Rank = 1, shape = [1xn])
+\begin{lstlisting}[language=Python,numbers=none]
+t_1 = ['apple', 'peach', 'banana']
+tf.zeros_like(t_1) # ==> ['' '' '']
+tf.ones_like(t_1) # ==> TypeError: Expected string, got 1 of type 'int' instead.
+\end{lstlisting}	
+		\newpage
+		\item 2x2 tensor, or "matrix", (Rank = 2, shape = [nxn])
+\begin{lstlisting}[language=Python,numbers=none]
+t_2 = [[True, False, False],
+[False, False, True],
+[False, True, False]]
+tf.zeros_like(t_2) # ==> 2x2 tensor, all elements are False
+tf.ones_like(t_2) # ==> 2x2 tensor, all elements are True
+\end{lstlisting}	
+	\end{itemize}
+	\begin{figure}[H]
+		\centering
+		\caption{Tensorflow data types}
+		\includegraphics[width = 1.0\textwidth]{datatype.png}
+	\end{figure}
+	\begin{remark}
+	TensorFlow takes Python natives types: boolean, numeric(int, float), strings. However, do not use Python naive types because TensorFlow has to infer Python type
+	\end{remark}
+	\medskip
+	\subsection{Variables}
+	Though constants are easier to define, there is something wrong with constants, other than being constant. That is, they are stored in the graph definition, so if you are to print out the graph definition:
+\begin{lstlisting}[language=Python,morekeywords ={as}]
+import tensorflow as tf
+my_const = tf.constant([1.0, 2.0], name="my_const")
+with tf.Session() as sess:
+	print(sess.graph.as_graph_def())
+# you will see value of my_const stored in the graph’s definition
+\end{lstlisting}
+	\noindent This makes loading graph expensive when constants are big.\\
+	 Therefore, we only use constants for primitive type and use \textbf{variables} or readers for data that requires more memory.
+	 \begin{lstlisting}[language=Python,morekeywords ={as}]
+# create variable a with scalar value
+a = tf.Variable(2, name="scalar")
+
+# create variable b as a vector
+b = tf.Variable([2, 3], name="vector")
+
+# create variable c as a 2x2 matrix
+c = tf.Variable([[0, 1], [2, 3]], name="matrix")
+
+# create variable W as 784 x 10 tensor, filled with zeros
+W = tf.Variable(tf.zeros([784,10]))
+\end{lstlisting}
+	Define the variables, input the value or sizes that you want it to start with.
+	\begin{remark}
+		tf.Variable is a class, but tf.constant is an op. \\
+	    tf.Variable holds several ops: x.initializer, x.value(), x.assign(\dots), x.assign\_add(\dots). Note that all ops have to be called by using `session' so that they can make effect
+	\end{remark}
+	
+	\subsubsection{Initialize your variables}	
+	You have to initialize your variables for them to work properly:
+	\begin{itemize}
+	\item Initialize all variables at once:
+\begin{lstlisting}[language=Python,morekeywords ={as}]
+init = tf.global_variables_initializer()
+with tf.Session() as sess:
+	sess.run(init) # goes to look at all variables and initialize them
+\end{lstlisting}
+	\item Initialize only a subset of variables:
+\begin{lstlisting}[language=Python,morekeywords ={as}]
+init_ab = tf.variables_initializer([a,b],name="init_ab")
+with tf.Session() as sess:
+	sess.run(init_ab)
+\end{lstlisting}
+	\item Initialize a single variable:
+\begin{lstlisting}[language=Python,morekeywords ={as}]
+W = tf.Variable(tf.zeros([784,10]))
+with tf.Session() as sess:
+	sess.run(W.initializer)
+\end{lstlisting}
+	\end{itemize}	
+	\subsubsection{Get the variable's value}
+	To see the value of a variable: theVar.eval()
+\begin{lstlisting}[language=Python,morekeywords ={as}]
+# let's say W is a random 700*100 variable object
+W = tf.Variable(tf.truncated_normal([784,10]))
+with tf.Session() as sess:
+	sess.run(W.initializer)
+	print(W.eval())
+\end{lstlisting}
+	\subsubsection{Assign values to variable}
+	To give a value for the variable, use assign()
+\begin{lstlisting}[language=Python,morekeywords ={as}]
+W = tf.Variable(10)
+W.assign(100)
+with tf.Session() as sess:
+	sess.run(W.initializer)
+	print(W.eval()) # >> 10 but why not 100?
+\end{lstlisting}
+	W.assign(100) will not assign the value 100 to W unless we run it. The correct way to do that is:
+	\begin{lstlisting}[language=Python,morekeywords ={as}]
+W = tf.Variable(10)
+assign_op = W.assign(100)
+with tf.Session() as sess:
+	sess.run(W.initializer)    
+	sess.run(assign_op)  
+	print(W.eval()) # >> 100
+\end{lstlisting}
+	\begin{remark}
+		Even if the W.initializer is not called at this stage, the code will still output 100, because assign\_op does the initialization, too. In fact, initializer op is the assign op that assigns the variables' initial value to the variable itself.
+	\end{remark}
+	Try the following code:
+	\begin{lstlisting}[language=Python,morekeywords ={as}]
+# create a variable whose original value is 2
+my_var = tf.Variable(2, name="my_var")
+
+# assign a * 2 to a and call that op a_times_two
+my_var_times_two = my_var.assign(2 * my_var)
+
+with tf.Session() as sess:
+	sess.run(my_var.initializer)
+	sess.run(my_var_times_two) # >> 4
+	sess.run(my_var_times_two) # >> 8
+	sess.run(my_var_times_two) # >> 16
+\end{lstlisting}
+	assign\_add() and assign\_sub() are related operations
+	\begin{lstlisting}[language=Python,morekeywords ={as}]
+my_var = tf.Variable(10)
+with tf.Session() as sess:
+	sess.run(my_var.initializer)  # >> 10
+	
+	# increment by 10
+	sess.run(my_var.assign_add(10)) # >> 20
+	
+	# decrement by 2
+	sess.run(my_var.assign_sub(2)) # >>18
+\end{lstlisting}	
+	\begin{remark}
+	assign\_add() and assign\_sub() cannot initialize the variable my\_var because these ops need the original value of my\_var
+	\end{remark}
+	\subsubsection{Sessions and variables}
+	Each session maintains it's own copy of variable.
+\begin{lstlisting}[language=Python,morekeywords ={as}]
+W = tf.Variable(10)
+sess1 = tf.Session()
+sess2 = tf.Session()
+sess1.run(W.initializer)
+sess2.run(W.initializer)
+print(sess1.run(W.assign_add(10))) # >> 20
+print(sess2.run(W.assign_sub(2))) # >> 8
+sess1.close()
+sess2.close()
+\end{lstlisting}
+	\subsubsection{Use a variable to initialize another variable}
+	Let's say we want have a variable W, and we want to have a variable U such that U = 2*W.
+\begin{lstlisting}[language=Python,morekeywords ={as}]
+# let W be a random 700*100 tensor
+W = tf.Variable(tf.truncated_normal([700,100]))
+U = tf.Variable(2*W)
+\end{lstlisting}	
+	However, using 2*W may not be very safe as we are not sure if W is initialised, thus replaying the last line of code with the following code is better: \colorbox{backcolour}{U = tf.Variable(2*W.initialized\_value())}
+	\medskip
+	\subsection{Session vs InteractiveSession}
+	The only difference is that an Interactive Session makes itself the default.
+\begin{lstlisting}[language=Python,morekeywords ={as}]
+sess = tf.InteractiveSession()
+a = tf.constant(5.0)
+b = tf.constant(6.0)
+c = a * b
+# We can just use 'c.eval()' without specifying the context 'sess'
+print(c.eval())
+sess.close()
+\end{lstlisting}
+	\medskip	
+	\subsection{Control Dependencies}
+	Sometimes we want to make sure some ops have run, before we run some other ops, the way to do it is to use \colorbox{backcolour}{tf.Graph.control\_dependencies(control\_inputs)}\\
+For example, your graph g has 5 ops: a, b, c, d, e:
+\begin{lstlisting}[language=Python,morekeywords ={as}]
+with g.control_dependencies([a,b,c]):
+	d = ...
+	e = ...
+	# 'd' and 'e' will only run after 'a','b','c' have executes
+\end{lstlisting}	
+	\medskip	
+	\subsection{Placeholders}
+	Recall that a TF program often has 2 phases: assemble a graph, then use a session to execute operations in the graph\\
+	A placeholder is something to allow you assemble the graph first without knowing the values needed for computation. It is in analogy to defining a function: $f(x,y) = x\times2 + y$ without knowing the value of x or y. In this case, x and y are placeholders for the actual values.
+	Placeholders allow us to later supply our data when they need to execute the computation. i.e. When we write our models to classify images, and the training set has millions of images, we do not want to load all these images first.
+\begin{lstlisting}[language=Python,morekeywords ={as}]
+### format ###
+tf.placeholder(dtype, shape=None, name=None)
+
+# create a placeholder of type float 32-bit, shape is a vector of 3 elements
+a = tf.placeholder(tf.float32, shape=[3])
+
+# create a constant of type float 32-bit, shape is a vector of 3 elements
+b = tf.constant([5, 5, 5], tf.float32)
+
+# use the placeholder as you would a constant or a variable
+c = a + b # Short for tf.add(a, b)
+
+with tf.Session() as sess:
+	print(sess.run(c)) # Error because a has no value
+\end{lstlisting}
+We can feed values to placeholders using a dictionary:
+\begin{lstlisting}[language=Python,morekeywords ={as}]
+a = tf.placeholder(tf.float32, shape=[3])
+b = tf.constant([5, 5, 5], tf.float32)
+c = a + b # Short for tf.add(a, b)
+
+with tf.Session() as sess:
+	# feed [1, 2, 3] to placeholder a via the dict {a: [1, 2, 3]}
+	print(sess.run(c, {a: [1, 2, 3]})) # >> [6,7,8] 
+\end{lstlisting}
+	Placeholders are valid ops, and can be put into graphs similarly like putting a constant
+	\begin{remark}
+		shape = None means that tensor of any shape will be accepted as value for placeholder. It is easy for constructing graphs, but nightmarish for debugging.
+	\end{remark}
+	\subsubsection{Feeding multiple data points}
+	What if we want to feed all the values in, one at a time? Use a loop.
+\begin{lstlisting}[language=Python,morekeywords ={as}]
+with tf.Session() as sess:
+	for a_value in list_of_values_for_a:
+		print(sess.run(c, {a: a_value})) 
+\end{lstlisting}	
+	\subsubsection{Feeding values to normal tensors}
+	We can feed values to tensors that are not placeholders provided that these tensors are feedable. To check if a tensor is feedable, try: 
+\begin{lstlisting}[language=Python,morekeywords ={as}]
+tf.Graph.is_feedable(tensor) # True if and only if tensor is feedable
+
+#e.g.
+W = tf.Variable(10)
+with tf.Session() as sess:
+    print(tf.get_default_graph().is_feedable(b))
+\end{lstlisting}\medskip
+\colorbox{backcolour}{feed\_dict} is an useful way to feed data in a dictionary-like way. For example:
+\begin{lstlisting}[language=Python,morekeywords ={as}]
+# create operations, tensors, etc (using the default graph)
+a = tf.add(2, 5)
+b = tf.multiply(a, 3)
+
+# start up a `Session` using the default graph
+sess = tf.Session()
+
+# define a dictionary that says to replace the value of `a` with 15
+replace_dict = {a: 15}
+
+# Run the session, passing in `replace_dict` as the value to `feed_dict`
+sess.run(b, feed_dict=replace_dict) # returns 45	
+\end{lstlisting}
+	\subsubsection{Differences between placeholders and variables}
+	\begin{center}
+	\begin{tabular}{| c | c | c |}
+		\hline
+		&Placeholder & Variable\\
+		\hline
+		Need Initial Value? & No & Yes\\
+		Changes over model training? & No & Yes\\
+		Used for? & Input data & Weights, biases, etc\\
+		\hline
+	\end{tabular}
+	\end{center}
+	\medskip
+	\subsection{TensorBoard}
+	TensorBoard is tool to help visualise the models, it comes with the TensorFlow package. It is extremely useful to help you see what is going on and debug when your model is complicated.
+	\noindent Here is your first TensorFlow program:
+\begin{lstlisting}[language=Python,morekeywords ={as}]
+import tensorflow as tf
+a = tf.constant(2)
+b = tf.constant(3)
+x = tf.add(a,b)
+with tf.Session() as sess:
+    print(sess.run(x))
+\end{lstlisting}
+
+	\noindent To visualize the above program with Tensor Board:
+\begin{lstlisting}[language=Python,morekeywords ={as}]
+import tensorflow as tf
+a = tf.constant(2)
+b = tf.constant(3)
+x = tf.add(a,b)
+with tf.Session() as sess:
+	writer = tf.summary.FileWriter('./graphs', sess.graph)
+	#'./graphs' is the path of where you want to store your event log
+	print(sess.run(x))
+\end{lstlisting}	
+	Then, go to terminal, move to the correct directory, run:
+\begin{lstlisting}[numbers=none,language=Python]
+$ python [yourprogram].py
+$ tensorboard --logdir="./graphs" --port 6006
+\end{lstlisting}
+	Then open your browser and go to: \url{http://localhost:6006/}\\
+	You should be able to see the following:
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width = 0.9\textwidth]{tensorboard.png}
+	\end{figure}
+	\noindent Since the name 'const' is not intuitive, we can change it to a predefined name by:
+\begin{lstlisting}[language=Python,morekeywords ={as}]
+a = tf.constant(2,name="a")
+b = tf.constant(3,name="b")
+x = tf.add(a,b,name="add")
+with tf.Session() as sess:
+	writer = tf.summary.FileWriter('./graphs', sess.graph)
+	#'./graphs' is the path of where you want to store your event log
+	print(sess.run(x))
+\end{lstlisting}
+	\medskip
+	\subsection{(Optional)Bad example: Lazy Loading}
+	Defer creating or initializing an object until it is needed
+	An example of normal loading: you create the op z when you assemble the graph
+\begin{lstlisting}[language=Python,morekeywords ={as}]
+x = tf.Variable(10, name='x')
+y = tf.Variable(20, name='y')
+z = tf.add(x, y) # you create the node for add node before executing the graph
+with tf.Session() as sess:
+	sess.run(tf.global_variables_initializer())
+	writer = tf.summary.FileWriter('./my_graph/l2', sess.graph)
+	for _ in range(10):
+		sess.run(z)
+	writer.close()	
+\end{lstlisting}	
+	Then for lazy loading:
+\begin{lstlisting}[language=Python,morekeywords ={as}]
+x = tf.Variable(10, name='x')
+y = tf.Variable(20, name='y')
+
+with tf.Session() as sess:
+	sess.run(tf.global_variables_initializer())
+	writer = tf.summary.FileWriter('./my_graph/l2', sess.graph)
+	for _ in range(10):
+		sess.run(sess.run(tf.add(x, y))) # just to save one line of the code
+	writer.close()	
+\end{lstlisting}
+Both will create 'add', but what is the problem?\\
+Normal loading just add 'add' op once into the graph, for lazy loading, you create multiple add node.\\
+Solution: Separate definition of ops from computing/running ops and use python property to ensure function is also loaded once at the first time it is called
+	\section{Basic Models}
+		\subsection{Linear regression}
+		Linear regression is a model relationship between a scalar dependent variable y and independent variables X.\\
+		We will use The fire and theft example of Chicago from CS20ST to illustrate. \footnote{All CS20SI's tutorials and solutions can be found here: \url{https://github.com/chiphuyen/stanford-tensorflow-tutorials}}\\
+		In this case, X is the number of incidents of fire, Y is the number of incidents of theft. We want to predict Y from X.\\
+		Model: $Y_{\text{predicted}}$ = w * X + b (w is the parameter, b is the bias)\\
+		\indent s.t. $ \underset{w,b}\min \,(Y - Y_{\text{predicted}})^{2}$ (The loss function)\\
+\begin{lstlisting}[language=Python,morekeywords ={as}]
+# necessary packages
+import numpy as np
+import matplotlib.pyplot as plt
+import tensorflow as tf
+import xlrd
+
+# load the data
+DATA_FILE = 'fire_theft.xls'
+
+# Step 1: read in data from the .xls file
+book = xlrd.open_workbook(DATA_FILE, encoding_override="utf-8")
+sheet = book.sheet_by_index(0)
+data = np.asarray([sheet.row_values(i) for i in range(1, sheet.nrows)])
+n_samples = sheet.nrows - 1
+
+# Step 2: create placeholders for input X (number of fire) and label Y (number of theft)
+X = tf.placeholder(tf.float32, name='X')
+Y = tf.placeholder(tf.float32, name='Y')
+
+# Step 3: create weight and bias, initialized to 0
+w = tf.Variable(0.0, name='weights')
+b = tf.Variable(0.0, name='bias')
+
+# Step 4: build model to predict Y
+Y_predicted = X * w + b 
+
+# Step 5: use the square error as the loss function
+loss = tf.square(Y - Y_predicted, name='loss')
+# loss = utils.huber_loss(Y, Y_predicted)
+
+# Step 6: using gradient descent with learning rate of 0.01 to minimize loss
+optimizer = tf.train.GradientDescentOptimizer(learning_rate=0.001).minimize(loss)
+
+with tf.Session() as sess:
+	# Step 7: initialize the necessary variables, in this case, w and b
+	sess.run(tf.global_variables_initializer()) 
+	
+	writer = tf.summary.FileWriter('./graphs/linear_reg', sess.graph)
+	# use: tensorboard --logdir = "./graphs" to visualise the graph	
+	
+	# Step 8: train the model
+	for i in range(50): # train the model 100 epochs
+		total_loss = 0
+		for x, y in data:
+			# Session runs train_op and fetch values of loss
+			_, l = sess.run([optimizer, loss], feed_dict={X: x, Y:y}) 
+			total_loss += l
+		print('Epoch {0}: {1}'.format(i, total_loss/n_samples))
+
+	# close the writer when you're done using it
+	writer.close() 
+	
+	# Step 9: output the values of w and b
+	w, b = sess.run([w, b]) 
+
+# plot the results
+X, Y = data.T[0], data.T[1]
+plt.plot(X, Y, 'bo', label='Real data')
+plt.plot(X, X * w + b, 'r', label='Predicted data')
+plt.legend()
+plt.show()
+\end{lstlisting}
+
+
+
+
+
+
+
+
+	
+	
+	\newpage
+	\section{Appendix}
+	\subsubsection*{Using Stats Dept Server}
+	\begin{enumerate}
+		\item For windows system, use PuTTY to open ssh.
+		\begin{figure}[H]
+			\centering
+			\includegraphics[width=0.7\textwidth]{putty.png}
+		\end{figure}
+		\item After clicking 'Open', you will be required to login using your userid and password, then you are in.
+		\begin{figure}[H]
+			\centering
+			\includegraphics[width=0.7\textwidth]{ssh.png}
+		\end{figure}
+		\item Download Cyberduck, add a new connection, or bookmark, using the same server, username, password.
+		\begin{figure}[H]
+			\centering
+			\includegraphics[width=0.7\textwidth]{cyberduck.png}
+		\end{figure}
+		\item The current window shown in the cyberduck is the location where your PuTTY shell is currently at.
+	\end{enumerate}
+	
+	
+	
+	\begin{thebibliography}{50}
+	
+	\bibitem{Siraj} Siraj Raval, \emph{``Intro to Tensorflow"}.  \url{https://youtu.be/2FmcHiLCwTU}
+	
+	\bibitem{CS 20SI notes} CS 20SI: Tensorflow for Deep Learning Research, \emph{Standford University}. The course materials are available at \url{https://web.stanford.edu/class/cs20si/syllabus.html}
+	
+	\bibitem{LP} Labhesh Patel, a Youtuber who made videos on CS20SI standford materials. The course is at \url{https://www.youtube.com/watch?v=g-EvyKpZjmQ&list=PLSPPwKHXGS2110rEaNH7amFGmaD5hsObs}
+	
+	\bibitem{TF} Tensorflow official website, \url{https://www.tensorflow.org/}
+	\end{thebibliography}
+	
+\end{document}

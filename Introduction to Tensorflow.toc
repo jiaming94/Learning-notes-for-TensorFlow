@@ -1,0 +1,33 @@
+\contentsline {section}{\numberline {1}Background}{2}{section.1}
+\contentsline {section}{\numberline {2}Installation}{2}{section.2}
+\contentsline {subsection}{\numberline {2.1}For Mac OS}{2}{subsection.2.1}
+\contentsline {subsection}{\numberline {2.2}For Windows}{2}{subsection.2.2}
+\contentsline {subsection}{\numberline {2.3}Validate your installation: Both Mac and Windows}{2}{subsection.2.3}
+\contentsline {section}{\numberline {3}Basics}{3}{section.3}
+\contentsline {subsection}{\numberline {3.1}Data Flow Graphs}{3}{subsection.3.1}
+\contentsline {subsection}{\numberline {3.2}Assign values}{3}{subsection.3.2}
+\contentsline {subsubsection}{\numberline {3.2.1}Constants}{3}{subsubsection.3.2.1}
+\contentsline {subsubsection}{\numberline {3.2.2}Zeros Tensor}{4}{subsubsection.3.2.2}
+\contentsline {subsubsection}{\numberline {3.2.3}Ones Tensor}{4}{subsubsection.3.2.3}
+\contentsline {subsubsection}{\numberline {3.2.4}Fill with a specific value}{4}{subsubsection.3.2.4}
+\contentsline {subsubsection}{\numberline {3.2.5}Constants as sequences}{4}{subsubsection.3.2.5}
+\contentsline {subsubsection}{\numberline {3.2.6}Randomly generated constants}{5}{subsubsection.3.2.6}
+\contentsline {subsection}{\numberline {3.3}Operations}{5}{subsection.3.3}
+\contentsline {subsection}{\numberline {3.4}Ranks, Shapes, Data Types}{5}{subsection.3.4}
+\contentsline {subsection}{\numberline {3.5}Variables}{6}{subsection.3.5}
+\contentsline {subsubsection}{\numberline {3.5.1}Initialize your variables}{7}{subsubsection.3.5.1}
+\contentsline {subsubsection}{\numberline {3.5.2}Get the variable's value}{7}{subsubsection.3.5.2}
+\contentsline {subsubsection}{\numberline {3.5.3}Assign values to variable}{7}{subsubsection.3.5.3}
+\contentsline {subsubsection}{\numberline {3.5.4}Sessions and variables}{8}{subsubsection.3.5.4}
+\contentsline {subsubsection}{\numberline {3.5.5}Use a variable to initialize another variable}{8}{subsubsection.3.5.5}
+\contentsline {subsection}{\numberline {3.6}Session vs InteractiveSession}{8}{subsection.3.6}
+\contentsline {subsection}{\numberline {3.7}Control Dependencies}{9}{subsection.3.7}
+\contentsline {subsection}{\numberline {3.8}Placeholders}{9}{subsection.3.8}
+\contentsline {subsubsection}{\numberline {3.8.1}Feeding multiple data points}{9}{subsubsection.3.8.1}
+\contentsline {subsubsection}{\numberline {3.8.2}Feeding values to normal tensors}{9}{subsubsection.3.8.2}
+\contentsline {subsubsection}{\numberline {3.8.3}Differences between placeholders and variables}{10}{subsubsection.3.8.3}
+\contentsline {subsection}{\numberline {3.9}TensorBoard}{10}{subsection.3.9}
+\contentsline {subsection}{\numberline {3.10}(Optional)Bad example: Lazy Loading}{11}{subsection.3.10}
+\contentsline {section}{\numberline {4}Basic Models}{12}{section.4}
+\contentsline {subsection}{\numberline {4.1}Linear regression}{12}{subsection.4.1}
+\contentsline {section}{\numberline {5}Appendix}{14}{section.5}
