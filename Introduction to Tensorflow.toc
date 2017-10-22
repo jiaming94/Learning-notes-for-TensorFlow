@@ -30,4 +30,3 @@
 \contentsline {subsection}{\numberline {3.10}(Optional)Bad example: Lazy Loading}{11}{subsection.3.10}
 \contentsline {section}{\numberline {4}Basic Models}{12}{section.4}
 \contentsline {subsection}{\numberline {4.1}Linear regression}{12}{subsection.4.1}
-\contentsline {section}{\numberline {5}Appendix}{14}{section.5}
